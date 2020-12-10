@@ -39,7 +39,7 @@ def check_adjacent_cells(array, i, j, n):
             if array[x][y] == 0:
                 zero_count += 1
 
-    if zero_count <= 9:
+    if zero_count <= zeros:
         if (i != 0 and i != n) and (j != 0 and j != n):
             # check all adjacent squares: [0][-1], [0][1], [-1][-1], [-1][0], [-1][1], [1][-1], [1][0], [1][1]
             if array[i][j] == 0:
@@ -225,7 +225,7 @@ def check_adjacent_cells(array, i, j, n):
             else:
                 print("validation failed, seems to be checking -1")
                 return False
-    elif zero_count > 9:
+    elif zero_count > zeros:
         return False
 
 
