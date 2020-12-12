@@ -15,7 +15,7 @@ counter = 0
 # on an intermediate stick before going to the third "end" position. basically, the game is
 # pattern recognition when coding this problem
 
-#use global counter to stop annoying counter resetting
+# use global counter to stop annoying counter resetting
 
 def towers(n, start, helper, end):
     global counter
