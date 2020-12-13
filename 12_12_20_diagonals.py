@@ -9,44 +9,47 @@
 
 # 5x5 grid
 n = 5
-# acceptable number of blank cells for a 5x5 is 25 - 16 = 9
+# Acceptable number of blank cells for a 5x5 is 25 - 16 = 9
 zeros = 9
 rows, cols = (n, n)
+# Makes an array (list of lists) full of -1s of n x n size
 array = [[-1 for i in range(cols)] for j in range(rows)]
-print(array)
 zero_count = 0
+z = (n ** 2) - 1
 
-
-def extend(array):
+def extend(array, z, n):
     global zero_count
-    global zeros
-    if not any(-1 in list for list in array):
-            print(array)
-            print(zero_count)
-            exit()
 
-    break_count = 0
-    for i in range(0, rows):
-        for j in range(0, cols):
-            if array[i][j] == -1:
-                break_count = 1
-                break
-        if break_count == 1:
-            break
+    # Using 24 / 5 + rounding to nearest int = 4 to get rows...see 1 / 5 = 0, 0 / 5 = 0
+    # and 24 modulo 5 = 4 to get columns...see 1 modulo 5 = 1, 0 modulo 5 = 0
+    i = int(z / n)
+    j = z % n
 
+    # Once the last item is passed, end the program
+    if z == -1:
+        print(array)
+        print('Total zeros:', zero_count)
+        exit()
+
+    # Make sure to increase the count every time a zero is placed and decrease it every time a zero
+    # is removed (placed after the recursive call)
+    # Take one off the counter in the recursive call (z) every time in order to track which cell you
+    # are on in the array. Neighbor checking has to pass and total zeros cannot exceed allotment in
+    # order to proceed. Check 0 last in [1, 2, 0] since it's basically a free pass and we'd
+    # prefer to backtrack less if possible by placing fewer early zeros
     for item in [1, 2, 0]:
         if item == 0:
             zero_count += 1
         array[i][j] = item
         print(array)
-        if check_adjacent_cells(array, i, j, n-1) and zero_count <= zeros:
-            extend(array)
-        else:
-            if item == 0:
-                zero_count -= 1
-            array[i][j] = -1
+        if check_adjacent_cells(array, i, j, n - 1) and zero_count <= zeros:
+            extend(array, z - 1, n)
+
+        if item == 0:
+            zero_count -= 1
 
 
+# Neighbor checking
 def check_adjacent_cells(array, i, j, n):
     if array[i][j] == 0:
         return True
@@ -92,5 +95,4 @@ def check_adjacent_cells(array, i, j, n):
         return True
 
 
-extend(array)
-print(zero_count)
+extend(array, z, n)
