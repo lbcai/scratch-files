@@ -14,219 +14,83 @@ zeros = 9
 rows, cols = (n, n)
 array = [[-1 for i in range(cols)] for j in range(rows)]
 print(array)
+zero_count = 0
+
 
 def extend(array):
+    global zero_count
+    global zeros
     if not any(-1 in list for list in array):
             print(array)
+            print(zero_count)
             exit()
 
+    break_count = 0
     for i in range(0, rows):
         for j in range(0, cols):
             if array[i][j] == -1:
-                for item in [1, 2, 0]:
-                    array[i][j] = item
-                    print(array)
-                    if check_adjacent_cells(array, i, j, n-1):
-                        extend(array)
-                    else:
-                        array[i][j] = -1
+                break_count = 1
+                break
+        if break_count == 1:
+            break
+
+    for item in [1, 2, 0]:
+        if item == 0:
+            zero_count += 1
+        array[i][j] = item
+        print(array)
+        if check_adjacent_cells(array, i, j, n-1) and zero_count <= zeros:
+            extend(array)
+        else:
+            if item == 0:
+                zero_count -= 1
+            array[i][j] = -1
 
 
 def check_adjacent_cells(array, i, j, n):
-    zero_count = 0
-    for x in range(0, rows):
-        for y in range(0, cols):
-            if array[x][y] == 0:
-                zero_count += 1
-
-    if zero_count <= zeros:
-        if (i != 0 and i != n) and (j != 0 and j != n):
-            # check all adjacent squares: [0][-1], [0][1], [-1][-1], [-1][0], [-1][1], [1][-1], [1][0], [1][1]
-            if array[i][j] == 0:
-                return True
-            elif array[i][j] == 1:  # /
-                if array[i + 1][j - 1] == 1 or array[i - 1][j + 1] == 1:
-                    return False
-                elif array[i + 0][j - 1] == 2 or array[i + 0][j + 1] == 2 or array[i + 1][j + 0] == 2 or array[i - 1][
-                    j + 0] == 2:
-                    return False
-                else:
-                    return True
-            elif array[i][j] == 2:  # \
-                if array[i - 1][j - 1] == 2 or array[i + 1][j + 1] == 2:
-                    return False
-                elif array[i + 0][j - 1] == 1 or array[i + 0][j + 1] == 1 or array[i + 1][j + 0] == 1 or array[i - 1][
-                    j + 0] == 1:
-                    return False
-                else:
-                    return True
-            else:
-                print("validation failed, seems to be checking -1")
+    if array[i][j] == 0:
+        return True
+    elif array[i][j] == 1:  # /
+        if j != 0:
+            if array[i][j - 1] == 2: # [0][-1] direct left
                 return False
-        elif i == 0:
-            if j == 0:
-                # in upper left corner. only check [0][1], [1][0], [1][1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i + 0][j + 1] == 2 or array[i + 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i + 1][j + 1] == 2:
-                        return False
-                    elif array[i + 0][j + 1] == 1 or array[i + 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-            elif j == n:
-                # in upper right corner. only check [0][-1], [1][0], [1][-1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i + 1][j - 1] == 1:
-                        return False
-                    elif array[i + 0][j - 1] == 2 or array[i + 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i + 0][j - 1] == 1 or array[i + 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-            else:
-                # anywhere in top row. only check [0][-1], [0][1], [1][0], [1][-1], [1][1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i + 1][j - 1] == 1:
-                        return False
-                    elif array[i + 0][j - 1] == 2 or array[i + 0][j + 1] == 2 or array[i + 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i + 1][j + 1] == 2:
-                        return False
-                    elif array[i + 0][j - 1] == 1 or array[i + 0][j + 1] == 1 or array[i + 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-        elif i == n:
-            if j == 0:
-                # in bottom left corner. only check [0][1], [-1][0], [-1][1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i - 1][j + 1] == 1:
-                        return False
-                    elif array[i + 0][j + 1] == 2 or array[i - 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i + 0][j + 1] == 1 or array[i - 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-            elif j == n:
-                # in bottom right corner. only check [0][-1], [-1][0], [-1][-1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i + 0][j - 1] == 2 or array[i - 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i - 1][j - 1] == 2:
-                        return False
-                    elif array[i + 0][j - 1] == 1 or array[i - 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-            else:
-                # anywhere in bottom row. only check [0][-1], [0][1], [-1][0], [-1][-1], [-1][1]
-                if array[i][j] == 0:
-                    return True
-                elif array[i][j] == 1:  # /
-                    if array[i - 1][j + 1] == 1:
-                        return False
-                    elif array[i + 0][j - 1] == 2 or array[i + 0][j + 1] == 2 or array[i - 1][j + 0] == 2:
-                        return False
-                    else:
-                        return True
-                elif array[i][j] == 2:  # \
-                    if array[i - 1][j - 1] == 2:
-                        return False
-                    elif array[i + 0][j - 1] == 1 or array[i + 0][j + 1] == 1 or array[i - 1][j + 0] == 1:
-                        return False
-                    else:
-                        return True
-                else:
-                    print("validation failed, seems to be checking -1")
-                    return False
-        elif j == 0:
-            # anywhere in first column but not top or bottom rows. check [-1][0], [1][0], [-1][1], [1][1], [0][1]
-            if array[i][j] == 0:
-                return True
-            elif array[i][j] == 1: # /
-                if array[i - 1][j + 1] == 1:
-                    return False
-                elif array[i + 0][j + 1] == 2 or array[i + 1][j + 0] == 2 or array[i - 1][j + 0] == 2:
-                    return False
-                else:
-                    return True
-            elif array [i][j] == 2: # \
-                if array[i + 1][j + 1] == 2:
-                    return False
-                elif array[i + 0][j + 1] == 1 or array[i + 1][j + 0] == 1 or array[i - 1][j + 0] == 1:
-                    return False
-                else:
-                    return True
-            else:
-                print("validation failed, seems to be checking -1")
+        if j != n:
+            if array[i][j + 1] == 2: # [0][1] direct right
                 return False
-        elif j == n:
-            # anywhere in last column but not top or bottom rows. check [-1][0], [1][0], [0][-1], [-1][-1], [1][-1]
-            if array[i][j] == 0:
-                return True
-            elif array[i][j] == 1:  # /
-                if array[i + 1][j - 1] == 1:
-                    return False
-                elif array[i + 0][j - 1] == 2 or array[i + 1][j + 0] == 2 or array[i - 1][j + 0] == 2:
-                    return False
-                else:
-                    return True
-            elif array[i][j] == 2:  # \
-                if array[i - 1][j - 1] == 2:
-                    return False
-                elif array[i + 0][j - 1] == 1 or array[i + 1][j + 0] == 1 or array[i - 1][j + 0] == 1:
-                    return False
-                else:
-                    return True
-            else:
-                print("validation failed, seems to be checking -1")
+        if i != 0:
+            if array[i - 1][j] == 2: # [-1][0] direct above
                 return False
-    elif zero_count > zeros:
-        return False
+            if j != n:
+                if array[i - 1][j + 1] == 1: # [-1][1] upper right corner
+                    return False
+        if i != n:
+            if array[i + 1][j] == 2: # [1][0] direct below
+                return False
+            if j != 0:
+                if array[i + 1][j - 1] == 1: # [1][-1] bottom left corner
+                    return False
+        return True
+    elif array[i][j] == 2:  # \
+        if j != 0:
+            if array[i][j - 1] == 1: # [0][-1] direct left
+                return False
+            if i != 0:
+                if array[i - 1][j - 1] == 2: # [-1][-1] upper left corner
+                    return False
+        if j != n:
+            if array[i][j + 1] == 1: # [0][1] direct right
+                return False
+        if i != 0:
+            if array[i - 1][j] == 1: # [-1][0] direct above
+                return False
+        if i != n:
+            if array[i + 1][j] == 1: # [1][0] direct below
+                return False
+            if j != n:
+                if array[i + 1][j + 1] == 2: # [1][1] bottom right corner
+                    return False
+        return True
 
 
 extend(array)
+print(zero_count)
